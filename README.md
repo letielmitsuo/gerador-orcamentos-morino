@@ -1,7 +1,7 @@
 # 📄 Morino Orçamentos
 
 ![Badge Status](https://img.shields.io/badge/Status-Concluído-success)
-![Badge Versão](https://img.shields.io/badge/Versão-1.0-blue)
+![Badge Versão](https://img.shields.io/badge/Versão-2.0-blue)
 ![Badge OS](https://img.shields.io/badge/OS-Windows-lightgrey)
 
 O **Morino Orçamentos** é um sistema desktop moderno e minimalista, desenvolvido para facilitar a gestão comercial, emissão de orçamentos e organização de clientes. Projetado para ser rápido e eficiente, o software permite que você trabalhe de forma totalmente offline, com seus dados salvos localmente e com total autonomia para gerenciar múltiplos emissores (filiais/empresas).
