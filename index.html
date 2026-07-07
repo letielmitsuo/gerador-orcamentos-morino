@@ -105,6 +105,14 @@
             border: 1px dashed #cbd5e1;
         }
 
+        .secao-destaque {
+            background-color: #eff6ff;
+            border: 1px solid #bfdbfe;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
         /* JANELAS MODAIS */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); z-index: 1000; justify-content: center; align-items: center; }
         .modal-conteudo { background: white; padding: 30px; border-radius: 16px; width: 550px; max-height: 85vh; overflow-y: auto; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); }
@@ -180,7 +188,7 @@
 
         <div class="bloco-cinza">
             <label style="font-weight: 600; font-size: 13px; margin: 0; color: #334155;">🔢 Configurar Próximo Número:</label>
-            <input type="number" id="input-mudar-numero" placeholder="Ex: 523" style="width: 120px; margin: 0;">
+            <input type="number" id="input-mudar-numero" placeholder="Ex: 001" style="width: 120px; margin: 0;">
             <button class="btn btn-padrao" style="padding: 8px 15px; min-width: auto; margin: 0;" onclick="forcarMudarNumero()">Aplicar Número</button>
         </div>
 
@@ -192,8 +200,20 @@
         </div>
         <hr>
 
+        <!-- NOVO MÓDULO: MINHA EMPRESA -->
+        <div class="secao-destaque">
+            <div class="form-group" style="margin-bottom: 0;">
+                <label for="select-empresa" style="color: #1e3a8a;">🏢 Selecione a Sua Empresa (Emissor):</label>
+                <div style="display: flex; gap: 10px;">
+                    <select id="select-empresa" onchange="carregarEmpresa()" style="flex: 2; border-color: #93c5fd;"></select>
+                    <button class="btn btn-padrao" onclick="abrirModalCadastroEmpresa()" style="flex: 1; min-width: auto;">➕ Nova Filial/Empresa</button>
+                    <button class="btn btn-azul-escuro" onclick="abrirModalEditarEmpresa()" style="flex: 1; min-width: auto;">✏️ Editar Empresa</button>
+                </div>
+            </div>
+        </div>
+
         <div class="form-group">
-            <label for="select-cliente">Selecionar Cliente Cadastrado:</label>
+            <label for="select-cliente">Selecionar Cliente (Destinatário):</label>
             <div style="display: flex; gap: 10px;">
                 <select id="select-cliente" onchange="carregarCliente()" style="flex: 2;">
                     <option value="">-- Escolha um cliente da lista --</option>
@@ -237,7 +257,6 @@
 
         <hr>
         <h3>Adicionar Item ao Orçamento</h3>
-        <!-- ÁREA CORRIGIDA (Layout do Flexbox Refeito para melhor distribuição) -->
         <div style="display: flex; gap: 12px; align-items: flex-end; margin-bottom: 20px; width: 100%;">
             <div class="form-group" style="margin-bottom: 0; flex: 0 0 80px;">
                 <label style="font-size: 12px;">Cód.</label>
@@ -259,7 +278,74 @@
         </div>
     </div>
 
-    <!-- JANELA MODAL: CADASTRO -->
+    <!-- JANELA MODAL: CADASTRO EMPRESA (EMISSOR) -->
+    <div id="modalCadastroEmpresa" class="modal">
+        <div class="modal-conteudo">
+            <h3>Cadastrar Minha Empresa</h3>
+            <div class="form-group">
+                <label>Nome da Empresa (Topo e Assinatura):</label>
+                <input type="text" id="cad-emp-nome" placeholder="Ex: LYM ELETRONICOS">
+            </div>
+            <div class="form-group">
+                <label>Endereço Completo:</label>
+                <input type="text" id="cad-emp-endereco" placeholder="Ex: Rua Arareua, 89 - São Paulo - SP">
+            </div>
+            <div class="linha-flex">
+                <div class="form-group" style="flex: 1;">
+                    <label>CNPJ:</label>
+                    <input type="text" id="cad-emp-cnpj" placeholder="Ex: 44.313.525/0001-52">
+                </div>
+                <div class="form-group" style="flex: 1;">
+                    <label>Telefone:</label>
+                    <input type="text" id="cad-emp-fone" placeholder="Ex: (11) 9 3366 6836">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Nome do Responsável:</label>
+                <input type="text" id="cad-emp-responsavel" placeholder="Sai na frase Atenciosamente, ...">
+            </div>
+            <div class="modal-botoes">
+                <button class="btn btn-verde" onclick="salvarNovaEmpresa()">✔ Salvar Empresa</button>
+                <button class="btn btn-azul-escuro" onclick="fecharModalCadastroEmpresa()">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JANELA MODAL: EDITAR EMPRESA (EMISSOR) -->
+    <div id="modalEditarEmpresa" class="modal">
+        <div class="modal-conteudo">
+            <h3>Editar Minha Empresa</h3>
+            <div class="form-group">
+                <label>Nome da Empresa (Topo e Assinatura):</label>
+                <input type="text" id="edit-emp-nome">
+            </div>
+            <div class="form-group">
+                <label>Endereço Completo:</label>
+                <input type="text" id="edit-emp-endereco">
+            </div>
+            <div class="linha-flex">
+                <div class="form-group" style="flex: 1;">
+                    <label>CNPJ:</label>
+                    <input type="text" id="edit-emp-cnpj">
+                </div>
+                <div class="form-group" style="flex: 1;">
+                    <label>Telefone:</label>
+                    <input type="text" id="edit-emp-fone">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Nome do Responsável:</label>
+                <input type="text" id="edit-emp-responsavel">
+            </div>
+            <div class="modal-botoes">
+                <button class="btn btn-verde" onclick="salvarAlteracaoEmpresa()">✔ Salvar</button>
+                <button class="btn btn-vermelho" onclick="excluirEmpresa()">✖ Excluir</button>
+                <button class="btn btn-azul-escuro" onclick="fecharModalEditarEmpresa()">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JANELA MODAL: CADASTRO CLIENTE -->
     <div id="modalCadastro" class="modal">
         <div class="modal-conteudo">
             <h3>Cadastrar Novo Cliente</h3>
@@ -290,7 +376,7 @@
         </div>
     </div>
 
-    <!-- JANELA MODAL: EDIÇÃO/EXCLUSÃO -->
+    <!-- JANELA MODAL: EDIÇÃO/EXCLUSÃO CLIENTE -->
     <div id="modalEditarCliente" class="modal">
         <div class="modal-conteudo">
             <h3>Editar/Excluir Cliente</h3>
@@ -354,11 +440,11 @@
     <!-- 2. O RESULTADO FINAL (ESPELHO DO DOCUMENTO) -->
     <div id="espelho-documento" class="documento-word">
         <div class="cabecalho">
-            <p class="empresa-nome">LYM ELETRONICOS</p>
-            <p class="empresa-detalhes">RUA ARAREUA, 89 - JARDIM DAS CAMELIAS, SAO PAULO - S.P.</p>
-            <p class="empresa-detalhes">CNPJ: 44.313.525/0001-52</p>
-            <p class="empresa-detalhes">Telefone: (11) 9 3366 6836</p>
-            <p class="titulo-orcamento" style="margin-bottom: 2px;">Orçamento Nº: <span id="doc-numero">000523</span></p>
+            <p class="empresa-nome" id="doc-empresa-nome">EMPRESA NÃO CADASTRADA</p>
+            <p class="empresa-detalhes" id="doc-empresa-end">---</p>
+            <p class="empresa-detalhes" id="doc-empresa-cnpj">---</p>
+            <p class="empresa-detalhes" id="doc-empresa-fone">---</p>
+            <p class="titulo-orcamento" style="margin-bottom: 2px;">Orçamento Nº: <span id="doc-numero">000001</span></p>
             <p class="empresa-detalhes" style="margin-top: 0;">Data: <span id="doc-data-hora">--/--/----</span></p>
         </div>
 
@@ -392,13 +478,13 @@
             <strong>Observação:</strong><br>
             <span id="doc-observacoes">---</span>
             <br><br>
-            <p style="text-align: right; margin: 0;">Atenciosamente, <strong>PAULO MORINO</strong></p>
+            <p style="text-align: right; margin: 0;">Atenciosamente, <strong id="doc-empresa-responsavel">---</strong></p>
         </div>
 
         <div class="assinatura-container">
             <div class="campo-assinatura">
                 <div class="linha-assinatura"></div>
-                <p>LYM ELETRONICOS</p>
+                <p id="doc-empresa-assinatura">---</p>
             </div>
             <div class="campo-assinatura">
                 <div class="linha-assinatura"></div>
@@ -414,8 +500,10 @@
     <script>
         let fs, path, caminhoBanco;
         let clientesCadastrados = {};
+        let empresasCadastradas = {};
+        let empresaAtualId = "";
         let orcamentosSalvos = [];
-        let numeroOrcamentoAtual = 523;
+        let numeroOrcamentoAtual = 001;
 
         let itensDoOrcamentoAtual = [];
         let valorTotalGeral = 0;
@@ -429,11 +517,15 @@
                 carregarBancoFisicoNativo();
             } else {
                 clientesCadastrados = JSON.parse(localStorage.getItem('db_clientes')) || {};
+                empresasCadastradas = JSON.parse(localStorage.getItem('db_empresas')) || {};
                 orcamentosSalvos = JSON.parse(localStorage.getItem('db_orcamentos')) || [];
-                numeroOrcamentoAtual = parseInt(localStorage.getItem('ultimo_num_orcamento')) || 523;
+                numeroOrcamentoAtual = parseInt(localStorage.getItem('ultimo_num_orcamento')) || 001;
+                empresaAtualId = localStorage.getItem('empresa_atual') || "";
             }
 
             document.getElementById('select-operador').value = localStorage.getItem('operador_atual') || "USUARIO_1";
+            
+            atualizarSelectEmpresas();
             atualizarSelectClientes();
             
             avancarParaProximoNumeroLivre();
@@ -468,8 +560,10 @@
                     const dadosRaw = fs.readFileSync(caminhoBanco, 'utf8');
                     const banco = JSON.parse(dadosRaw);
                     clientesCadastrados = banco.clientes || {};
+                    empresasCadastradas = banco.empresas || {};
                     orcamentosSalvos = banco.orcamentos || [];
-                    numeroOrcamentoAtual = banco.ultimoNumero || 523;
+                    numeroOrcamentoAtual = banco.ultimoNumero || 001;
+                    empresaAtualId = banco.empresaAtual || "";
                 } catch(e) {
                     alert("Erro ao ler banco físico.");
                 }
@@ -481,6 +575,8 @@
                 try {
                     const dadosBanco = {
                         clientes: clientesCadastrados,
+                        empresas: empresasCadastradas,
+                        empresaAtual: empresaAtualId,
                         orcamentos: orcamentosSalvos,
                         ultimoNumero: numeroOrcamentoAtual
                     };
@@ -492,6 +588,8 @@
                 }
             } else {
                 localStorage.setItem('db_clientes', JSON.stringify(clientesCadastrados));
+                localStorage.setItem('db_empresas', JSON.stringify(empresasCadastradas));
+                localStorage.setItem('empresa_atual', empresaAtualId);
                 localStorage.setItem('db_orcamentos', JSON.stringify(orcamentosSalvos));
                 localStorage.setItem('ultimo_num_orcamento', numeroOrcamentoAtual);
                 mostrarAvisoSalvo(true);
@@ -501,6 +599,128 @@
         function salvarOperador() {
             localStorage.setItem('operador_atual', document.getElementById('select-operador').value);
         }
+
+        /* =================== FUNÇÕES DA EMPRESA (EMISSOR) =================== */
+        function atualizarSelectEmpresas() {
+            const select = document.getElementById('select-empresa');
+            select.innerHTML = '';
+            
+            if (Object.keys(empresasCadastradas).length === 0) {
+                let option = document.createElement('option');
+                option.value = "";
+                option.text = "-- Nenhuma empresa cadastrada --";
+                select.add(option);
+                empresaAtualId = "";
+            } else {
+                for (let id in empresasCadastradas) {
+                    let option = document.createElement('option');
+                    option.value = id;
+                    option.text = empresasCadastradas[id].nome.toUpperCase();
+                    select.add(option);
+                }
+                if(empresasCadastradas[empresaAtualId]) {
+                    select.value = empresaAtualId;
+                } else {
+                    empresaAtualId = Object.keys(empresasCadastradas)[0];
+                    select.value = empresaAtualId;
+                }
+            }
+            carregarEmpresa();
+        }
+
+        function carregarEmpresa() {
+            empresaAtualId = document.getElementById('select-empresa').value;
+            
+            if(empresaAtualId && empresasCadastradas[empresaAtualId]) {
+                const emp = empresasCadastradas[empresaAtualId];
+                document.getElementById('doc-empresa-nome').innerText = emp.nome.toUpperCase();
+                document.getElementById('doc-empresa-end').innerText = emp.endereco || "---";
+                document.getElementById('doc-empresa-cnpj').innerText = emp.cnpj ? `CNPJ/CPF: ${emp.cnpj}` : "---";
+                document.getElementById('doc-empresa-fone').innerText = emp.fone ? `Telefone: ${emp.fone}` : "---";
+                document.getElementById('doc-empresa-responsavel').innerText = emp.responsavel ? emp.responsavel.toUpperCase() : "---";
+                document.getElementById('doc-empresa-assinatura').innerText = emp.nome.toUpperCase();
+                salvarBancoFisicoNativo(); 
+            } else {
+                // Estado Zerado
+                document.getElementById('doc-empresa-nome').innerText = "EMPRESA NÃO CADASTRADA";
+                document.getElementById('doc-empresa-end').innerText = "---";
+                document.getElementById('doc-empresa-cnpj').innerText = "---";
+                document.getElementById('doc-empresa-fone').innerText = "---";
+                document.getElementById('doc-empresa-responsavel').innerText = "---";
+                document.getElementById('doc-empresa-assinatura').innerText = "---";
+            }
+        }
+
+        function abrirModalCadastroEmpresa() { document.getElementById('modalCadastroEmpresa').style.display = 'flex'; }
+        function fecharModalCadastroEmpresa() { document.getElementById('modalCadastroEmpresa').style.display = 'none'; }
+        
+        function salvarNovaEmpresa() {
+            const nome = document.getElementById('cad-emp-nome').value;
+            if (!nome) { alert("O nome da Empresa é obrigatório!"); return; }
+
+            const novoId = "emp_" + Date.now().toString();
+            empresasCadastradas[novoId] = {
+                nome: nome,
+                endereco: document.getElementById('cad-emp-endereco').value,
+                cnpj: document.getElementById('cad-emp-cnpj').value,
+                fone: document.getElementById('cad-emp-fone').value,
+                responsavel: document.getElementById('cad-emp-responsavel').value || nome
+            };
+            
+            empresaAtualId = novoId;
+            atualizarSelectEmpresas();
+            
+            // Limpa form
+            document.getElementById('cad-emp-nome').value = ""; document.getElementById('cad-emp-endereco').value = ""; document.getElementById('cad-emp-cnpj').value = ""; document.getElementById('cad-emp-fone').value = ""; document.getElementById('cad-emp-responsavel').value = "";
+            
+            fecharModalCadastroEmpresa();
+            salvarBancoFisicoNativo();
+        }
+
+        function abrirModalEditarEmpresa() {
+            const id = document.getElementById('select-empresa').value;
+            if(!id) { alert("Nenhuma empresa selecionada para editar."); return; }
+            const emp = empresasCadastradas[id];
+            document.getElementById('edit-emp-nome').value = emp.nome;
+            document.getElementById('edit-emp-endereco').value = emp.endereco;
+            document.getElementById('edit-emp-cnpj').value = emp.cnpj;
+            document.getElementById('edit-emp-fone').value = emp.fone;
+            document.getElementById('edit-emp-responsavel').value = emp.responsavel;
+            document.getElementById('modalEditarEmpresa').style.display = 'flex';
+        }
+        function fecharModalEditarEmpresa() { document.getElementById('modalEditarEmpresa').style.display = 'none'; }
+
+        function salvarAlteracaoEmpresa() {
+            const id = document.getElementById('select-empresa').value;
+            const nome = document.getElementById('edit-emp-nome').value;
+            if(!nome) { alert("O nome da Empresa não pode ficar vazio."); return; }
+            
+            empresasCadastradas[id] = {
+                nome: nome,
+                endereco: document.getElementById('edit-emp-endereco').value,
+                cnpj: document.getElementById('edit-emp-cnpj').value,
+                fone: document.getElementById('edit-emp-fone').value,
+                responsavel: document.getElementById('edit-emp-responsavel').value || nome
+            };
+            atualizarSelectEmpresas();
+            fecharModalEditarEmpresa();
+            salvarBancoFisicoNativo();
+        }
+
+        function excluirEmpresa() {
+            const id = document.getElementById('select-empresa').value;
+            if(!id) return;
+            
+            if(confirm("Tem certeza que deseja excluir esta Empresa permanentemente?")) {
+                delete empresasCadastradas[id];
+                empresaAtualId = Object.keys(empresasCadastradas)[0] || "";
+                atualizarSelectEmpresas();
+                fecharModalEditarEmpresa();
+                salvarBancoFisicoNativo(); 
+                alert("Empresa excluída com sucesso!");
+            }
+        }
+        /* ==================================================================== */
 
         function avancarParaProximoNumeroLivre() {
             let numeroFormatado = String(numeroOrcamentoAtual).padStart(6, '0');
@@ -522,7 +742,7 @@
             const existe = orcamentosSalvos.find(o => o.numero === numeroFormatado);
             
             if(existe) {
-                let maior = 523;
+                let maior = 001;
                 orcamentosSalvos.forEach(o => {
                     let n = parseInt(o.numero);
                     if (n > maior) maior = n;
@@ -543,7 +763,7 @@
         }
 
         function carregarBancoDeDadosFisico() {
-            alert("Selecione o arquivo 'banco_dados_principal.json' que está na sua pasta sincronizada.");
+            alert("Selecione o arquivo 'banco_dados_principal.json' que está na sua pasta de Backup.");
             document.getElementById('input-banco-fisico').click();
         }
 
@@ -556,22 +776,22 @@
                     const banco = JSON.parse(e.target.result);
                     if (banco.clientes && banco.orcamentos) {
                         clientesCadastrados = {...clientesCadastrados, ...banco.clientes};
+                        if(banco.empresas) empresasCadastradas = {...empresasCadastradas, ...banco.empresas};
                         
                         let mapaOrcamentos = {};
                         orcamentosSalvos.forEach(o => mapaOrcamentos[o.numero] = o);
                         banco.orcamentos.forEach(o => mapaOrcamentos[o.numero] = o);
                         orcamentosSalvos = Object.values(mapaOrcamentos);
 
-                        numeroOrcamentoAtual = Math.max(numeroOrcamentoAtual, banco.ultimoNumero || 523);
+                        numeroOrcamentoAtual = Math.max(numeroOrcamentoAtual, banco.ultimoNumero || 001);
+                        if(banco.empresaAtual && empresasCadastradas[banco.empresaAtual]) empresaAtualId = banco.empresaAtual;
+
                         avancarParaProximoNumeroLivre();
-
-                        localStorage.setItem('db_clientes', JSON.stringify(clientesCadastrados));
-                        localStorage.setItem('db_orcamentos', JSON.stringify(orcamentosSalvos));
-                        localStorage.setItem('ultimo_num_orcamento', numeroOrcamentoAtual);
-
+                        atualizarSelectEmpresas();
                         atualizarSelectClientes();
                         document.getElementById('doc-numero').innerText = String(numeroOrcamentoAtual).padStart(6, '0');
                         novoOrcamento();
+                        salvarBancoFisicoNativo();
                         alert("Banco de dados físico sincronizado com sucesso no aplicativo!");
                     }
                 } catch (err) { alert("Erro ao carregar o arquivo."); }
@@ -817,6 +1037,12 @@
                 return;
             }
 
+            const empAtual = empresasCadastradas[empresaAtualId];
+            if (!empAtual) {
+                alert("Você precisa cadastrar e selecionar a sua Empresa (Emissor) antes de gerar o orçamento.");
+                return;
+            }
+
             const numeroFormatado = String(numeroOrcamentoAtual).padStart(6, '0');
             const existe = orcamentosSalvos.find(o => o.numero === numeroFormatado);
             
@@ -830,6 +1056,7 @@
             const dadosOrcamento = {
                 numero: numeroFormatado,
                 dataHora: dataAtualDoDocumento,
+                empresa: empAtual, 
                 cliente: {
                     nome: nomeCliente,
                     fone: document.getElementById('form-fone').value,
@@ -858,6 +1085,9 @@
                     </tr>`;
             });
 
+            const textCnpj = empAtual.cnpj ? `<p style="font-size: 12px; margin: 2px 0 0 0;">CNPJ: ${empAtual.cnpj}</p>` : "";
+            const textFone = empAtual.fone ? `<p style="font-size: 12px; margin: 2px 0 0 0;">Telefone: ${empAtual.fone}</p>` : "";
+
             const dadosWord = `
                 <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
                 <head>
@@ -871,10 +1101,10 @@
                 </head>
                 <body>
                     <div style="text-align: center; width: 100%; border-bottom: 2px solid #000000; padding-bottom: 10px; margin-bottom: 20px;">
-                        <p style="font-size: 22px; font-weight: bold; margin: 0;">LYM ELETRONICOS</p>
-                        <p style="font-size: 12px; margin: 4px 0 0 0;">RUA ARAREUA, 89 - JARDIM DAS CAMELIAS, SAO PAULO - S.P.</p>
-                        <p style="font-size: 12px; margin: 2px 0 0 0;">CNPJ: 44.313.525/0001-52</p>
-                        <p style="font-size: 12px; margin: 2px 0 0 0;">Telefone: (11) 9 3366 6836</p>
+                        <p style="font-size: 22px; font-weight: bold; margin: 0;">${empAtual.nome.toUpperCase()}</p>
+                        <p style="font-size: 12px; margin: 4px 0 0 0;">${empAtual.endereco}</p>
+                        ${textCnpj}
+                        ${textFone}
                         <p style="font-size: 18px; font-weight: bold; margin: 12px 0 2px 0;">Orçamento Nº: ${dadosOrcamento.numero}</p>
                         <p style="font-size: 12px; margin: 0;">Data: ${dadosOrcamento.dataHora}</p>
                     </div>
@@ -908,8 +1138,22 @@
                         <strong>Observação:</strong><br/>
                         ${dadosOrcamento.observacoes || '---'}
                         <br><br>
-                        <p style="text-align: right; margin: 0;">Atenciosamente, <strong>PAULO MORINO</strong></p>
+                        <p style="text-align: right; margin: 0;">Atenciosamente, <strong>${empAtual.responsavel.toUpperCase()}</strong></p>
                     </div>
+                    
+                    <table style="width: 100%; border: none; margin-top: 60px;">
+                        <tr>
+                            <td style="border: none; width: 45%; text-align: center; padding: 0;">
+                                <div style="border-top: 1px solid #000000; margin-bottom: 5px; width: 100%;"></div>
+                                <p style="font-size: 12px; margin: 0;">${empAtual.nome.toUpperCase()}</p>
+                            </td>
+                            <td style="border: none; width: 10%;"></td>
+                            <td style="border: none; width: 45%; text-align: center; padding: 0;">
+                                <div style="border-top: 1px solid #000000; margin-bottom: 5px; width: 100%;"></div>
+                                <p style="font-size: 12px; margin: 0;">Assinatura do Cliente / ${dadosOrcamento.cliente.contato}</p>
+                            </td>
+                        </tr>
+                    </table>
                 </body>
                 </html>
             `;
