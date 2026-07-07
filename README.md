@@ -64,43 +64,7 @@ O **Morino Orçamentos** é um sistema desktop moderno e minimalista, desenvolvi
 ---
 
 ## 🔄 Armazenamento de Dados
-O sistema armazena suas informações em `C:\Users\SEU_USUARIO\AppData\Local\Morino_Orcamentos\User Data\banco_dados_principal.json`. Este arquivo é a alma do seu negócio; mantenha-o sempre em backup ou sincronizado em nuvem.
-
----
-
-💾 Backup e Segurança dos Dados
-O Morino Orçamentos salva todas as suas informações (empresas, clientes e histórico de orçamentos) em um arquivo chamado banco_dados_principal.json. Manter cópias deste arquivo é a sua garantia de segurança contra falhas no computador.
-
-Onde encontrar seus dados?
-Dependendo de como o seu sistema foi configurado, o arquivo banco_dados_principal.json pode estar em um dos dois locais abaixo:
-
-Local Padrão (Pasta de Dados do Usuário):
-C:\Users\SEU_USUARIO\AppData\Local\Gerador_Orcamentos\User Data\Default\banco_dados_principal.json
-
-Local Personalizado (Na mesma pasta do programa):
-Se você configurou o sistema para salvar na pasta de instalação, o arquivo estará junto do seu executável Morino.exe.
-
-Dica: Para encontrar a pasta de dados rapidamente, pressione Windows + R, cole %localappdata%\Gerador_Orcamentos\User Data\Default e pressione Enter.
-
-Como fazer Backup (Manual)
-Localize o arquivo banco_dados_principal.json nos caminhos acima.
-
-Copie o arquivo e cole em um local seguro (Pendrive, Google Drive, OneDrive ou um serviço de nuvem).
-
-Recomendamos fazer isso periodicamente (semanalmente ou após dias de muito movimento).
-
-Como Restaurar um Backup
-Se você mudou de computador ou teve algum imprevisto, restaurar seus dados é simples:
-
-Abra o Morino Orçamentos.
-
-Clique no botão "🔌 Carregar Backup" no painel superior.
-
-Selecione o arquivo banco_dados_principal.json que você guardou anteriormente.
-
-O sistema irá ler o arquivo, carregar todos os seus dados e salvar automaticamente no local correto.
-
-Dica de Ouro: Se você utiliza ferramentas como o Syncthing ou OneDrive para sincronizar pastas, aponte a sincronização para o arquivo de banco de dados e tenha seus orçamentos atualizados automaticamente em todos os seus computadores!
+O sistema armazena suas informações em `C:\Users\SEU_USUARIO\AppData\Local\Gerador_Orcamentos\User Data\banco_dados_principal.json`. Este arquivo é a alma do seu negócio; mantenha-o sempre em backup ou sincronizado em nuvem.
 
 --- 
 
