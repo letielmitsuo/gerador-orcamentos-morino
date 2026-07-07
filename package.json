@@ -1,0 +1,11 @@
+{
+  "name": "gerador_orcamentos",
+  "main": "index.html",
+  "window": {
+    "title": "LYM Eletrônicos - Painel de Orçamentos",
+    "width": 1000,
+    "height": 800,
+    "toolbar": false,
+    "icon": "icone.png"
+  }
+}

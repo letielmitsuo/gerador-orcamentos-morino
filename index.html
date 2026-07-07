@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Morino Orçamentos</title>
+    <style>
+        /* ==========================================================================
+           1. TEMA MODERNO E MINIMALISTA (INTERFACE DO PROGRAMA)
+           ========================================================================== */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+        body { 
+            font-family: 'Inter', system-ui, -apple-system, sans-serif; 
+            background-color: #f0f4f8; 
+            color: #1e293b;
+            margin: 0; 
+            padding: 30px 20px; 
+        }
+
+        .painel-controle { 
+            background: #ffffff; 
+            padding: 35px; 
+            border-radius: 16px; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.03), 0 4px 10px rgba(0,0,0,0.02); 
+            max-width: 900px; 
+            margin: 0 auto 40px auto; 
+            border: 1px solid #e2e8f0;
+        }
+
+        h2, h3 { color: #0f172a; margin-top: 0; }
+        h2 { font-size: 24px; border-bottom: 2px solid #f1f5f9; padding-bottom: 15px; margin-bottom: 20px; }
+        h3 { font-size: 18px; margin-bottom: 15px; color: #334155; }
+        hr { border: none; border-top: 1px solid #e2e8f0; margin: 25px 0; }
+
+        .form-group { margin-bottom: 18px; }
+        .form-group label { display: block; font-weight: 600; font-size: 13px; margin-bottom: 8px; color: #475569; }
+        
+        .form-group input, .form-group select, .form-group textarea, #input-mudar-numero { 
+            width: 100%; 
+            padding: 10px 14px; 
+            box-sizing: border-box; 
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            background-color: #f8fafc;
+            color: #1e293b;
+            transition: all 0.2s ease;
+        }
+        
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus, #input-mudar-numero:focus {
+            outline: none;
+            border-color: #3b82f6;
+            background-color: #ffffff;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+        }
+
+        .form-group textarea { resize: vertical; min-height: 80px; }
+        
+        /* Estilo dos Botões Modernos */
+        .botoes-container { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
+        .btn { 
+            color: white; 
+            padding: 12px 18px; 
+            border: none; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            font-weight: 600; 
+            font-size: 13px;
+            font-family: 'Inter', sans-serif;
+            flex: 1; 
+            text-align: center; 
+            min-width: 140px; 
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .btn:active { transform: translateY(1px); box-shadow: none; }
+        .btn-padrao { background: #3b82f6; } .btn-padrao:hover { background: #2563eb; }
+        .btn-verde { background: #10b981; } .btn-verde:hover { background: #059669; }
+        .btn-laranja { background: #f59e0b; } .btn-laranja:hover { background: #d97706; }
+        .btn-vermelho { background: #ef4444; } .btn-vermelho:hover { background: #dc2626; }
+        .btn-azul-escuro { background: #334155; } .btn-azul-escuro:hover { background: #1e293b; }
+        
+        .alerta-backup { 
+            background-color: #f1f5f9; 
+            padding: 15px; 
+            border-radius: 8px; 
+            margin-bottom: 20px; 
+            font-size: 13px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            border: 1px solid #e2e8f0;
+        }
+
+        .bloco-cinza {
+            background-color: #f8fafc; 
+            padding: 15px; 
+            border-radius: 8px; 
+            margin-bottom: 20px; 
+            display: flex; 
+            gap: 12px; 
+            align-items: center;
+            border: 1px dashed #cbd5e1;
+        }
+
+        /* JANELAS MODAIS */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); z-index: 1000; justify-content: center; align-items: center; }
+        .modal-conteudo { background: white; padding: 30px; border-radius: 16px; width: 550px; max-height: 85vh; overflow-y: auto; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); }
+        .modal-botoes { display: flex; gap: 10px; margin-top: 25px; }
+        
+        .lista-pesquisa { list-style: none; padding: 0; margin: 15px 0; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; }
+        .lista-pesquisa li { padding: 12px 15px; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; background: #fff; transition: background 0.2s; }
+        .lista-pesquisa li:last-child { border-bottom: none; }
+        .lista-pesquisa li:hover { background-color: #f8fafc; }
+        .lista-info-clicavel { cursor: pointer; flex: 1; display: flex; justify-content: space-between; margin-right: 15px; color: #334155; font-size: 14px; }
+        .lista-info-clicavel strong { color: #0f172a; }
+
+        .linha-flex { display: flex; justify-content: space-between; gap: 15px; }
+
+
+        /* ==========================================================================
+           2. DESIGN DO DOCUMENTO FINAL (ESPELHO PARA IMPRESSÃO)
+           ========================================================================== */
+        .documento-word { background: white; width: 210mm; min-height: 297mm; padding: 20mm; margin: 0 auto; box-sizing: border-box; box-shadow: 0 10px 25px rgba(0,0,0,0.08); border-radius: 4px; font-family: Arial, sans-serif; color: #000; }
+        .cabecalho { border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 20px; text-align: center; }
+        .empresa-nome { font-size: 22px; font-weight: bold; margin: 0; }
+        .empresa-detalhes, .cliente-detalhes { font-size: 13px; line-height: 1.5; margin: 5px 0; }
+        .titulo-orcamento { font-size: 18px; font-weight: bold; margin-top: 10px; }
+        .secao-cliente { border: 1px solid #ccc; padding: 10px; margin-bottom: 20px; border-radius: 4px; text-align: left; }
+        
+        table.tabela-itens { width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 12px; }
+        table.tabela-itens th, table.tabela-itens td { border: 1px solid #000; padding: 8px; text-align: left; }
+        table.tabela-itens th { background-color: #f2f2f2; }
+        table.tabela-itens td:nth-child(3), table.tabela-itens td:nth-child(4), table.tabela-itens td:nth-child(5) { text-align: right; }
+        
+        .btn-acao-tabela { color: white; border: none; padding: 5px 8px; cursor: pointer; font-weight: bold; border-radius: 4px; font-size: 11px; margin-right: 3px; }
+        .btn-deletar-item { background: #ef4444; }
+        .btn-editar-item { background: #f59e0b; }
+        
+        .total-container { text-align: right; font-size: 16px; font-weight: bold; margin-bottom: 20px; padding: 12px 15px; border: 2px solid #000; border-radius: 4px; display: inline-block; float: right; }
+        .clear { clear: both; }
+
+        .observacoes { font-size: 12px; margin-top: 20px; border: 1px solid #ccc; border-radius: 4px; padding: 15px; min-height: 50px; white-space: pre-wrap; text-align: left; background: #fafafa; }
+        
+        .assinatura-container { margin-top: 70px; display: flex; justify-content: space-around; }
+        .campo-assinatura { text-align: center; width: 45%; font-size: 13px; }
+        .linha-assinatura { border-top: 1px solid #000; margin-bottom: 5px; }
+
+        /* REGRAS DE IMPRESSÃO */
+        @media print {
+            body { background: none; padding: 0; }
+            .painel-controle, .modal, .alerta-backup { display: none !important; }
+            .coluna-acao { display: none !important; width: 0% !important; }
+            th:nth-child(2), td:nth-child(2) { width: 52% !important; }
+            .documento-word { box-shadow: none; margin: 0; padding: 0; width: 100%; border-radius: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 1. PAINEL DE CONTROLE -->
+    <div class="painel-controle">
+        <h2>Morino Orçamentos</h2>
+        
+        <div class="alerta-backup">
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <label style="margin: 0; color: #0f172a;"><b>👤 Operador:</b></label>
+                <select id="select-operador" onchange="salvarOperador()" style="width: auto; padding: 6px 10px; margin: 0;">
+                    <option value="USUARIO_1">USUÁRIO 1</option>
+                    <option value="USUARIO_2">USUÁRIO 2</option>
+                </select>
+                <span id="status-salvamento" style="font-weight: 500; transition: opacity 0.3s; color: #10b981; background: #d1fae5; padding: 4px 10px; border-radius: 20px; font-size: 12px;">✓ Conectado</span>
+            </div>
+            <div>
+                <button class="btn btn-azul-escuro" style="padding: 6px 12px; font-size: 12px; min-width: auto;" onclick="carregarBancoDeDadosFisico()">🔌 Carregar Backup</button>
+            </div>
+        </div>
+
+        <div class="bloco-cinza">
+            <label style="font-weight: 600; font-size: 13px; margin: 0; color: #334155;">🔢 Configurar Próximo Número:</label>
+            <input type="number" id="input-mudar-numero" placeholder="Ex: 523" style="width: 120px; margin: 0;">
+            <button class="btn btn-padrao" style="padding: 8px 15px; min-width: auto; margin: 0;" onclick="forcarMudarNumero()">Aplicar Número</button>
+        </div>
+
+        <div class="botoes-container">
+            <button class="btn btn-padrao" onclick="botaoNovoOrcamentoComSalvar()">📄 Novo Orçamento</button>
+            <button class="btn btn-verde" onclick="salvarEBaixarWord()">💾 Salvar e Gerar Word (.doc)</button>
+            <button class="btn btn-azul-escuro" onclick="abrirModalPesquisa()">🔍 Pesquisar/Editar Salvos</button>
+            <button class="btn btn-laranja" onclick="window.print()">🖨️ Imprimir Direto</button>
+        </div>
+        <hr>
+
+        <div class="form-group">
+            <label for="select-cliente">Selecionar Cliente Cadastrado:</label>
+            <div style="display: flex; gap: 10px;">
+                <select id="select-cliente" onchange="carregarCliente()" style="flex: 2;">
+                    <option value="">-- Escolha um cliente da lista --</option>
+                </select>
+                <button class="btn btn-padrao" onclick="abrirModalCadastro()" style="flex: 1; min-width: auto;">➕ Cadastrar Novo</button>
+                <button class="btn btn-azul-escuro" onclick="abrirModalEditarCliente()" style="flex: 1; min-width: auto;">✏️ Editar/Excluir</button>
+            </div>
+        </div>
+
+        <div class="linha-flex">
+            <div class="form-group" style="flex: 1;">
+                <label>Nome do Cliente:</label>
+                <input type="text" id="form-nome" placeholder="Razão social ou Nome completo">
+            </div>
+            <div class="form-group" style="flex: 1;">
+                <label>Telefone:</label>
+                <input type="text" id="form-fone" placeholder="(11) 90000-0000">
+            </div>
+        </div>
+
+        <div class="linha-flex">
+            <div class="form-group" style="flex: 1;">
+                <label>CNPJ/CPF:</label>
+                <input type="text" id="form-cnpj" placeholder="00.000.000/0000-00">
+            </div>
+            <div class="form-group" style="flex: 1;">
+                <label>Endereço Completo:</label>
+                <input type="text" id="form-endereco" placeholder="Rua, Número, Bairro, Cidade - UF">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Nome do Contato:</label>
+            <input type="text" id="form-contato" placeholder="Nome do responsável">
+        </div>
+
+        <div class="form-group">
+            <label>Observação:</label>
+            <textarea id="form-observacoes" placeholder="Digite as observações gerais aqui..."></textarea>
+        </div>
+
+        <hr>
+        <h3>Adicionar Item ao Orçamento</h3>
+        <!-- ÁREA CORRIGIDA (Layout do Flexbox Refeito para melhor distribuição) -->
+        <div style="display: flex; gap: 12px; align-items: flex-end; margin-bottom: 20px; width: 100%;">
+            <div class="form-group" style="margin-bottom: 0; flex: 0 0 80px;">
+                <label style="font-size: 12px;">Cód.</label>
+                <input type="text" id="item-cod" placeholder="001">
+            </div>
+            <div class="form-group" style="margin-bottom: 0; flex: 1;">
+                <label style="font-size: 12px;">Descrição do Serviço/Material</label>
+                <input type="text" id="item-desc" placeholder="Ex: Câmera de Segurança">
+            </div>
+            <div class="form-group" style="margin-bottom: 0; flex: 0 0 110px;">
+                <label style="font-size: 12px;">Preço Un. (R$)</label>
+                <input type="number" id="item-preco" placeholder="150,00">
+            </div>
+            <div class="form-group" style="margin-bottom: 0; flex: 0 0 70px;">
+                <label style="font-size: 12px;">Qtd.</label>
+                <input type="number" id="item-qtd" placeholder="1">
+            </div>
+            <button class="btn btn-padrao" type="button" onclick="adicionarItem()" style="flex: 0 0 110px; min-width: auto; margin-bottom: 0; padding: 10px 0;">+ Inserir</button>
+        </div>
+    </div>
+
+    <!-- JANELA MODAL: CADASTRO -->
+    <div id="modalCadastro" class="modal">
+        <div class="modal-conteudo">
+            <h3>Cadastrar Novo Cliente</h3>
+            <div class="form-group">
+                <label>Razão Social / Nome:</label>
+                <input type="text" id="cad-nome">
+            </div>
+            <div class="form-group">
+                <label>Telefone:</label>
+                <input type="text" id="cad-fone">
+            </div>
+            <div class="form-group">
+                <label>CNPJ / CPF:</label>
+                <input type="text" id="cad-cnpj">
+            </div>
+            <div class="form-group">
+                <label>Endereço:</label>
+                <input type="text" id="cad-endereco">
+            </div>
+            <div class="form-group">
+                <label>Nome do Contato:</label>
+                <input type="text" id="cad-contato">
+            </div>
+            <div class="modal-botoes">
+                <button class="btn btn-verde" onclick="salvarCliente()">✔ Salvar Cliente</button>
+                <button class="btn btn-azul-escuro" onclick="fecharModalCadastro()">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JANELA MODAL: EDIÇÃO/EXCLUSÃO -->
+    <div id="modalEditarCliente" class="modal">
+        <div class="modal-conteudo">
+            <h3>Editar/Excluir Cliente</h3>
+            <div class="form-group">
+                <label>Razão Social / Nome:</label>
+                <input type="text" id="edit-clie-nome">
+            </div>
+            <div class="form-group">
+                <label>Telefone:</label>
+                <input type="text" id="edit-clie-fone">
+            </div>
+            <div class="form-group">
+                <label>CNPJ / CPF:</label>
+                <input type="text" id="edit-clie-cnpj">
+            </div>
+            <div class="form-group">
+                <label>Endereço:</label>
+                <input type="text" id="edit-clie-endereco">
+            </div>
+            <div class="form-group">
+                <label>Nome do Contato:</label>
+                <input type="text" id="edit-clie-contato">
+            </div>
+            <div class="modal-botoes">
+                <button class="btn btn-verde" onclick="salvarAlteracaoCliente()">✔ Salvar</button>
+                <button class="btn btn-vermelho" onclick="excluirCliente()">✖ Excluir</button>
+                <button class="btn btn-azul-escuro" onclick="fecharModalEditarCliente()">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JANELA MODAL: PESQUISA -->
+    <div id="modalPesquisa" class="modal">
+        <div class="modal-conteudo">
+            <h3>Orçamentos Salvos</h3>
+            <p style="font-size: 13px; color: #64748b; margin-bottom: 15px;">Clique num orçamento para carregar ou no botão para apagar:</p>
+            <ul id="lista-orcamentos-salvos" class="lista-pesquisa"></ul>
+            <div class="modal-botoes">
+                <button class="btn btn-azul-escuro" onclick="fecharModalPesquisa()">Fechar Janela</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JANELA MODAL: EDITAR ITEM -->
+    <div id="modalEditarItem" class="modal">
+        <div class="modal-conteudo">
+            <h3>Editar Descrição</h3>
+            <div class="form-group">
+                <label>Descrição do Item:</label>
+                <textarea id="edit-item-desc"></textarea>
+            </div>
+            <input type="hidden" id="edit-item-index">
+            <div class="modal-botoes">
+                <button class="btn btn-verde" onclick="salvarDescricaoItem()">✔ Salvar</button>
+                <button class="btn btn-azul-escuro" onclick="fecharModalEditarItem()">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- 2. O RESULTADO FINAL (ESPELHO DO DOCUMENTO) -->
+    <div id="espelho-documento" class="documento-word">
+        <div class="cabecalho">
+            <p class="empresa-nome">LYM ELETRONICOS</p>
+            <p class="empresa-detalhes">RUA ARAREUA, 89 - JARDIM DAS CAMELIAS, SAO PAULO - S.P.</p>
+            <p class="empresa-detalhes">CNPJ: 44.313.525/0001-52</p>
+            <p class="empresa-detalhes">Telefone: (11) 9 3366 6836</p>
+            <p class="titulo-orcamento" style="margin-bottom: 2px;">Orçamento Nº: <span id="doc-numero">000523</span></p>
+            <p class="empresa-detalhes" style="margin-top: 0;">Data: <span id="doc-data-hora">--/--/----</span></p>
+        </div>
+
+        <div class="secao-cliente">
+            <p class="cliente-detalhes"><strong>Cliente:</strong> <span id="doc-cliente-nome">---</span> | <strong>Fone:</strong> <span id="doc-cliente-fone">---</span></p>
+            <p class="cliente-detalhes"><strong>Contato:</strong> <span id="doc-cliente-contato">---</span></p>
+            <p class="cliente-detalhes"><strong>CNPJ/CPF:</strong> <span id="doc-cliente-cnpj">---</span></p>
+            <p class="cliente-detalhes"><strong>Endereço:</strong> <span id="doc-cliente-end">---</span></p>
+        </div>
+
+        <table class="tabela-itens">
+            <thead>
+                <tr>
+                    <th style="width: 8%;">Código</th>
+                    <th style="width: 44%;">Descrição</th>
+                    <th style="width: 15%;">Preço Unit.</th>
+                    <th style="width: 10%;">Qtd</th>
+                    <th style="width: 15%;">Valor Total</th>
+                    <th class="coluna-acao" style="width: 12%;">Ação</th>
+                </tr>
+            </thead>
+            <tbody id="corpo-tabela"></tbody>
+        </table>
+
+        <div class="total-container">
+            TOTAL A PAGAR: <span id="doc-total">R$ 0,00</span>
+        </div>
+        <div class="clear"></div>
+
+        <div class="observacoes">
+            <strong>Observação:</strong><br>
+            <span id="doc-observacoes">---</span>
+            <br><br>
+            <p style="text-align: right; margin: 0;">Atenciosamente, <strong>PAULO MORINO</strong></p>
+        </div>
+
+        <div class="assinatura-container">
+            <div class="campo-assinatura">
+                <div class="linha-assinatura"></div>
+                <p>LYM ELETRONICOS</p>
+            </div>
+            <div class="campo-assinatura">
+                <div class="linha-assinatura"></div>
+                <p>Assinatura do Cliente / <span id="doc-assinatura-nome">---</span></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- SELETOR OCULTO -->
+    <input type="file" id="input-banco-fisico" style="display: none;" accept="*" onchange="processarArquivoBanco(event)">
+
+    <!-- 3. INTELIGÊNCIA DO PROGRAMA -->
+    <script>
+        let fs, path, caminhoBanco;
+        let clientesCadastrados = {};
+        let orcamentosSalvos = [];
+        let numeroOrcamentoAtual = 523;
+
+        let itensDoOrcamentoAtual = [];
+        let valorTotalGeral = 0;
+        let dataAtualDoDocumento = "";
+
+        window.onload = function() {
+            if (typeof require !== 'undefined') {
+                fs = require('fs');
+                path = require('path');
+                caminhoBanco = path.join(nw.App.dataPath, 'banco_dados_principal.json');
+                carregarBancoFisicoNativo();
+            } else {
+                clientesCadastrados = JSON.parse(localStorage.getItem('db_clientes')) || {};
+                orcamentosSalvos = JSON.parse(localStorage.getItem('db_orcamentos')) || [];
+                numeroOrcamentoAtual = parseInt(localStorage.getItem('ultimo_num_orcamento')) || 523;
+            }
+
+            document.getElementById('select-operador').value = localStorage.getItem('operador_atual') || "USUARIO_1";
+            atualizarSelectClientes();
+            
+            avancarParaProximoNumeroLivre();
+            
+            document.getElementById('doc-numero').innerText = String(numeroOrcamentoAtual).padStart(6, '0');
+            novoOrcamento();
+        };
+
+        function mostrarAvisoSalvo(sucesso) {
+            const status = document.getElementById('status-salvamento');
+            const agora = new Date();
+            const hora = String(agora.getHours()).padStart(2, '0') + ':' + String(agora.getMinutes()).padStart(2, '0') + ':' + String(agora.getSeconds()).padStart(2, '0');
+            
+            status.style.opacity = 0;
+            setTimeout(() => {
+                if(sucesso) {
+                    status.innerHTML = "✓ Salvo às " + hora;
+                    status.style.color = "#10b981";
+                    status.style.background = "#d1fae5";
+                } else {
+                    status.innerHTML = "✖ Erro às " + hora;
+                    status.style.color = "#ef4444";
+                    status.style.background = "#fee2e2";
+                }
+                status.style.opacity = 1;
+            }, 150);
+        }
+
+        function carregarBancoFisicoNativo() {
+            if (fs && fs.existsSync(caminhoBanco)) {
+                try {
+                    const dadosRaw = fs.readFileSync(caminhoBanco, 'utf8');
+                    const banco = JSON.parse(dadosRaw);
+                    clientesCadastrados = banco.clientes || {};
+                    orcamentosSalvos = banco.orcamentos || [];
+                    numeroOrcamentoAtual = banco.ultimoNumero || 523;
+                } catch(e) {
+                    alert("Erro ao ler banco físico.");
+                }
+            }
+        }
+
+        function salvarBancoFisicoNativo() {
+            if (fs) {
+                try {
+                    const dadosBanco = {
+                        clientes: clientesCadastrados,
+                        orcamentos: orcamentosSalvos,
+                        ultimoNumero: numeroOrcamentoAtual
+                    };
+                    fs.writeFileSync(caminhoBanco, JSON.stringify(dadosBanco, null, 2), 'utf8');
+                    mostrarAvisoSalvo(true);
+                } catch(e) {
+                    mostrarAvisoSalvo(false);
+                    alert("Erro de gravação no HD: " + e.message);
+                }
+            } else {
+                localStorage.setItem('db_clientes', JSON.stringify(clientesCadastrados));
+                localStorage.setItem('db_orcamentos', JSON.stringify(orcamentosSalvos));
+                localStorage.setItem('ultimo_num_orcamento', numeroOrcamentoAtual);
+                mostrarAvisoSalvo(true);
+            }
+        }
+
+        function salvarOperador() {
+            localStorage.setItem('operador_atual', document.getElementById('select-operador').value);
+        }
+
+        function avancarParaProximoNumeroLivre() {
+            let numeroFormatado = String(numeroOrcamentoAtual).padStart(6, '0');
+            let conflito = false;
+            
+            while(orcamentosSalvos.find(o => o.numero === numeroFormatado)) {
+                numeroOrcamentoAtual++;
+                numeroFormatado = String(numeroOrcamentoAtual).padStart(6, '0');
+                conflito = true;
+            }
+            if(conflito) salvarBancoFisicoNativo();
+        }
+
+        function forcarMudarNumero() {
+            const novoNum = parseInt(document.getElementById('input-mudar-numero').value);
+            if(!novoNum || novoNum <= 0) { alert("Digite um número válido."); return; }
+            
+            const numeroFormatado = String(novoNum).padStart(6, '0');
+            const existe = orcamentosSalvos.find(o => o.numero === numeroFormatado);
+            
+            if(existe) {
+                let maior = 523;
+                orcamentosSalvos.forEach(o => {
+                    let n = parseInt(o.numero);
+                    if (n > maior) maior = n;
+                });
+                let proximoLivre = maior + 1;
+
+                alert("⛔ BLOQUEADO: O número " + numeroFormatado + " já está sendo usado pelo cliente '" + existe.cliente.nome + "'.\n\nPara não apagar o histórico, a alteração foi cancelada.\n\n💡 Recomendamos usar o próximo número livre da fila: " + proximoLivre);
+                
+                document.getElementById('input-mudar-numero').value = "";
+                return;
+            }
+            
+            numeroOrcamentoAtual = novoNum;
+            document.getElementById('doc-numero').innerText = numeroFormatado;
+            document.getElementById('input-mudar-numero').value = "";
+            salvarBancoFisicoNativo();
+            alert("Número do orçamento alterado com sucesso para " + numeroFormatado);
+        }
+
+        function carregarBancoDeDadosFisico() {
+            alert("Selecione o arquivo 'banco_dados_principal.json' que está na sua pasta sincronizada.");
+            document.getElementById('input-banco-fisico').click();
+        }
+
+        function processarArquivoBanco(event) {
+            const arquivo = event.target.files[0];
+            if (!arquivo) return;
+            const leitor = new FileReader();
+            leitor.onload = function(e) {
+                try {
+                    const banco = JSON.parse(e.target.result);
+                    if (banco.clientes && banco.orcamentos) {
+                        clientesCadastrados = {...clientesCadastrados, ...banco.clientes};
+                        
+                        let mapaOrcamentos = {};
+                        orcamentosSalvos.forEach(o => mapaOrcamentos[o.numero] = o);
+                        banco.orcamentos.forEach(o => mapaOrcamentos[o.numero] = o);
+                        orcamentosSalvos = Object.values(mapaOrcamentos);
+
+                        numeroOrcamentoAtual = Math.max(numeroOrcamentoAtual, banco.ultimoNumero || 523);
+                        avancarParaProximoNumeroLivre();
+
+                        localStorage.setItem('db_clientes', JSON.stringify(clientesCadastrados));
+                        localStorage.setItem('db_orcamentos', JSON.stringify(orcamentosSalvos));
+                        localStorage.setItem('ultimo_num_orcamento', numeroOrcamentoAtual);
+
+                        atualizarSelectClientes();
+                        document.getElementById('doc-numero').innerText = String(numeroOrcamentoAtual).padStart(6, '0');
+                        novoOrcamento();
+                        alert("Banco de dados físico sincronizado com sucesso no aplicativo!");
+                    }
+                } catch (err) { alert("Erro ao carregar o arquivo."); }
+            };
+            leitor.readAsText(arquivo);
+            event.target.value = '';
+        }
+
+        function pegarDataComputador() {
+            const agora = new Date();
+            const dia = String(agora.getDate()).padStart(2, '0');
+            const mes = String(agora.getMonth() + 1).padStart(2, '0'); 
+            const ano = agora.getFullYear();
+            dataAtualDoDocumento = `${dia}/${mes}/${ano}`;
+            document.getElementById('doc-data-hora').innerText = dataAtualDoDocumento;
+        }
+
+        document.getElementById('form-nome').addEventListener('input', (e) => document.getElementById('doc-cliente-nome').innerText = e.target.value);
+        document.getElementById('form-fone').addEventListener('input', (e) => document.getElementById('doc-cliente-fone').innerText = e.target.value);
+        document.getElementById('form-cnpj').addEventListener('input', (e) => document.getElementById('doc-cliente-cnpj').innerText = e.target.value);
+        document.getElementById('form-endereco').addEventListener('input', (e) => document.getElementById('doc-cliente-end').innerText = e.target.value);
+        document.getElementById('form-observacoes').addEventListener('input', (e) => document.getElementById('doc-observacoes').innerText = e.target.value || '---');
+        document.getElementById('form-contato').addEventListener('input', (e) => {
+            document.getElementById('doc-cliente-contato').innerText = e.target.value;
+            document.getElementById('doc-assinatura-nome').innerText = e.target.value;
+        });
+
+        function abrirModalCadastro() { document.getElementById('modalCadastro').style.display = 'flex'; }
+        function fecharModalCadastro() { document.getElementById('modalCadastro').style.display = 'none'; }
+        function abrirModalPesquisa() { document.getElementById('modalPesquisa').style.display = 'flex'; listarOrcamentosNoModal(); }
+        function fecharModalPesquisa() { document.getElementById('modalPesquisa').style.display = 'none'; }
+        
+        function abrirModalEditarItem(index) {
+            document.getElementById('edit-item-index').value = index;
+            document.getElementById('edit-item-desc').value = itensDoOrcamentoAtual[index].desc;
+            document.getElementById('modalEditarItem').style.display = 'flex';
+        }
+        function fecharModalEditarItem() { document.getElementById('modalEditarItem').style.display = 'none'; }
+
+        function abrirModalEditarCliente() {
+            const id = document.getElementById('select-cliente').value;
+            if(!id) { alert("Selecione um cliente na lista primeiro."); return; }
+            const c = clientesCadastrados[id];
+            document.getElementById('edit-clie-nome').value = c.nome;
+            document.getElementById('edit-clie-fone').value = c.fone;
+            document.getElementById('edit-clie-cnpj').value = c.cnpj;
+            document.getElementById('edit-clie-endereco').value = c.endereco;
+            document.getElementById('edit-clie-contato').value = c.contato;
+            document.getElementById('modalEditarCliente').style.display = 'flex';
+        }
+        function fecharModalEditarCliente() { document.getElementById('modalEditarCliente').style.display = 'none'; }
+
+        function salvarAlteracaoCliente() {
+            const id = document.getElementById('select-cliente').value;
+            const nome = document.getElementById('edit-clie-nome').value;
+            if(!nome) { alert("O nome não pode ficar vazio."); return; }
+            
+            clientesCadastrados[id] = {
+                nome: nome,
+                fone: document.getElementById('edit-clie-fone').value,
+                cnpj: document.getElementById('edit-clie-cnpj').value,
+                endereco: document.getElementById('edit-clie-endereco').value,
+                contato: document.getElementById('edit-clie-contato').value
+            };
+            atualizarSelectClientes();
+            document.getElementById('select-cliente').value = id;
+            carregarCliente();
+            fecharModalEditarCliente();
+            salvarBancoFisicoNativo();
+        }
+
+        function excluirCliente() {
+            const id = document.getElementById('select-cliente').value;
+            
+            if(!id) {
+                alert("Selecione um cliente primeiro.");
+                return;
+            }
+            
+            if(confirm("Tem certeza que deseja excluir este cliente permanentemente?")) {
+                delete clientesCadastrados[id];
+                atualizarSelectClientes();
+                
+                document.getElementById('form-nome').value = "";
+                document.getElementById('form-fone').value = "";
+                document.getElementById('form-cnpj').value = "";
+                document.getElementById('form-endereco').value = "";
+                document.getElementById('form-contato').value = "";
+                
+                document.getElementById('doc-cliente-nome').innerText = "---";
+                document.getElementById('doc-cliente-fone').innerText = "---";
+                document.getElementById('doc-cliente-cnpj').innerText = "---";
+                document.getElementById('doc-cliente-end').innerText = "---";
+                document.getElementById('doc-cliente-contato').innerText = "---";
+                document.getElementById('doc-assinatura-nome').innerText = "---";
+
+                fecharModalEditarCliente();
+                salvarBancoFisicoNativo(); 
+                
+                alert("Cliente excluído com sucesso!");
+            }
+        }
+
+        function atualizarSelectClientes() {
+            const select = document.getElementById('select-cliente');
+            select.innerHTML = '<option value="">-- Escolha um cliente da lista --</option>';
+            for (let id in clientesCadastrados) {
+                let option = document.createElement('option');
+                option.value = id;
+                option.text = clientesCadastrados[id].nome.toUpperCase();
+                select.add(option);
+            }
+        }
+
+        function salvarCliente() {
+            const nome = document.getElementById('cad-nome').value;
+            if (!nome) { alert("Nome é obrigatório!"); return; }
+
+            const novoId = Date.now().toString();
+            clientesCadastrados[novoId] = {
+                nome,
+                fone: document.getElementById('cad-fone').value,
+                cnpj: document.getElementById('cad-cnpj').value,
+                endereco: document.getElementById('cad-endereco').value,
+                contato: document.getElementById('cad-contato').value
+            };
+            atualizarSelectClientes();
+            document.getElementById('select-cliente').value = novoId;
+            carregarCliente();
+            fecharModalCadastro();
+            salvarBancoFisicoNativo();
+        }
+
+        function carregarCliente() {
+            const id = document.getElementById('select-cliente').value;
+            if(clientesCadastrados[id]) {
+                const c = clientesCadastrados[id];
+                document.getElementById('form-nome').value = c.nome;
+                document.getElementById('form-fone').value = c.fone;
+                document.getElementById('form-cnpj').value = c.cnpj;
+                document.getElementById('form-endereco').value = c.endereco;
+                document.getElementById('form-contato').value = c.contato;
+                
+                document.getElementById('doc-cliente-nome').innerText = c.nome;
+                document.getElementById('doc-cliente-fone').innerText = c.fone;
+                document.getElementById('doc-cliente-cnpj').innerText = c.cnpj;
+                document.getElementById('doc-cliente-end').innerText = c.endereco;
+                document.getElementById('doc-cliente-contato').innerText = c.contato;
+                document.getElementById('doc-assinatura-nome').innerText = c.contato;
+            }
+        }
+
+        function adicionarItem() {
+            const cod = document.getElementById('item-cod').value;
+            const desc = document.getElementById('item-desc').value;
+            const preco = parseFloat(document.getElementById('item-preco').value) || 0;
+            const qtd = parseInt(document.getElementById('item-qtd').value) || 0;
+            
+            if(!desc || preco <= 0 || qtd <= 0) { alert("Preencha item corretamente!"); return; }
+
+            itensDoOrcamentoAtual.push({ cod, desc: desc.toUpperCase(), preco, qtd });
+            renderizarTabelaItens();
+
+            document.getElementById('item-cod').value = "";
+            document.getElementById('item-desc').value = "";
+            document.getElementById('item-preco').value = "";
+            document.getElementById('item-qtd').value = "";
+        }
+
+        function deletarItem(index) {
+            itensDoOrcamentoAtual.splice(index, 1);
+            renderizarTabelaItens();
+        }
+
+        function salvarDescricaoItem() {
+            const index = document.getElementById('edit-item-index').value;
+            const novaDesc = document.getElementById('edit-item-desc').value;
+            if(!novaDesc.trim()) { alert("A descrição não pode ficar vazia."); return; }
+            itensDoOrcamentoAtual[index].desc = novaDesc.toUpperCase();
+            renderizarTabelaItens();
+            fecharModalEditarItem();
+        }
+
+        function renderizarTabelaItens() {
+            const tabela = document.getElementById('corpo-tabela');
+            tabela.innerHTML = "";
+            valorTotalGeral = 0;
+
+            itensDoOrcamentoAtual.forEach((item, index) => {
+                let totalItem = item.preco * item.qtd;
+                valorTotalGeral += totalItem;
+
+                tabela.innerHTML += `<tr>
+                    <td>${item.cod}</td>
+                    <td>${item.desc}</td>
+                    <td>${item.preco.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
+                    <td>${item.qtd}</td>
+                    <td>${totalItem.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
+                    <td class="coluna-acao">
+                        <button class="btn-acao-tabela btn-editar-item" onclick="abrirModalEditarItem(${index})">✏️</button>
+                        <button class="btn-acao-tabela btn-deletar-item" onclick="deletarItem(${index})">X</button>
+                    </td>
+                </tr>`;
+            });
+
+            document.getElementById('doc-total').innerText = valorTotalGeral.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        }
+
+        function botaoNovoOrcamentoComSalvar() {
+            salvarBancoFisicoNativo(); 
+            numeroOrcamentoAtual++;
+            avancarParaProximoNumeroLivre();
+            novoOrcamento();
+        }
+
+        function novoOrcamento() {
+            document.getElementById('doc-numero').innerText = String(numeroOrcamentoAtual).padStart(6, '0');
+            document.getElementById('select-cliente').value = "";
+            document.getElementById('form-nome').value = ""; document.getElementById('form-fone').value = ""; document.getElementById('form-cnpj').value = ""; document.getElementById('form-endereco').value = ""; document.getElementById('form-contato').value = "";
+            document.getElementById('form-observacoes').value = "";
+            
+            document.getElementById('doc-cliente-nome').innerText = "---"; document.getElementById('doc-cliente-fone').innerText = "---"; document.getElementById('doc-cliente-cnpj').innerText = "---"; document.getElementById('doc-cliente-end').innerText = "---"; document.getElementById('doc-cliente-contato').innerText = "---"; document.getElementById('doc-assinatura-nome').innerText = "---";
+            document.getElementById('doc-observacoes').innerText = "---";
+            
+            pegarDataComputador(); 
+            itensDoOrcamentoAtual = [];
+            renderizarTabelaItens();
+        }
+
+        function excluirOrcamentoDoBanco(num) {
+            if(confirm("Deseja excluir permanentemente o Orçamento Nº " + num + "?")) {
+                orcamentosSalvos = orcamentosSalvos.filter(o => o.numero !== num);
+                listarOrcamentosNoModal();
+                salvarBancoFisicoNativo();
+                novoOrcamento();
+            }
+        }
+
+        function salvarEBaixarWord() {
+            const nomeCliente = document.getElementById('form-nome').value;
+            if(!nomeCliente || itensDoOrcamentoAtual.length === 0) {
+                alert("O orçamento precisa de cliente e itens antes de ser exportado.");
+                return;
+            }
+
+            const numeroFormatado = String(numeroOrcamentoAtual).padStart(6, '0');
+            const existe = orcamentosSalvos.find(o => o.numero === numeroFormatado);
+            
+            if (existe) {
+                const confirma = confirm(`⚠️ AVISO DE SOBREPOSIÇÃO!\n\nJá existe um orçamento salvo com o número ${numeroFormatado} (Cliente: ${existe.cliente.nome}).\n\nSe continuar, o orçamento antigo será SUBSTITUÍDO pelo atual.\n\nDeseja sobrescrever?`);
+                if (!confirma) {
+                    return;
+                }
+            }
+
+            const dadosOrcamento = {
+                numero: numeroFormatado,
+                dataHora: dataAtualDoDocumento,
+                cliente: {
+                    nome: nomeCliente,
+                    fone: document.getElementById('form-fone').value,
+                    cnpj: document.getElementById('form-cnpj').value,
+                    endereco: document.getElementById('form-endereco').value,
+                    contato: document.getElementById('form-contato').value
+                },
+                observacoes: document.getElementById('form-observacoes').value,
+                itens: itensDoOrcamentoAtual,
+                total: valorTotalGeral
+            };
+
+            orcamentosSalvos = orcamentosSalvos.filter(o => o.numero !== dadosOrcamento.numero);
+            orcamentosSalvos.push(dadosOrcamento);
+
+            let linhasLimpasHTML = "";
+            itensDoOrcamentoAtual.forEach(item => {
+                let totalItem = item.preco * item.qtd;
+                linhasLimpasHTML += `
+                    <tr style="min-height: 24px;">
+                        <td style="border: 1px solid #000000; padding: 6px; font-size: 10pt; text-align: left; vertical-align: middle;">${item.cod}</td>
+                        <td style="border: 1px solid #000000; padding: 6px; font-size: 10pt; text-align: left; vertical-align: middle; width: 55%;">${item.desc}</td>
+                        <td style="border: 1px solid #000000; padding: 6px; font-size: 10pt; text-align: right; vertical-align: middle;">${item.preco.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
+                        <td style="border: 1px solid #000000; padding: 6px; font-size: 10pt; text-align: right; vertical-align: middle;">${item.qtd}</td>
+                        <td style="border: 1px solid #000000; padding: 6px; font-size: 10pt; text-align: right; vertical-align: middle;">${totalItem.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
+                    </tr>`;
+            });
+
+            const dadosWord = `
+                <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+                <head>
+                <style>
+                    @page { size: 21cm 29.7cm; margin: 2cm; }
+                    body { font-family: 'Arial'; font-size: 11pt; }
+                    table { width: 100%; border-collapse: collapse; }
+                    th { border: 1px solid #000000; background-color: #F2F2F2; padding: 6px; }
+                    td { border: 1px solid #000000; padding: 6px; }
+                </style>
+                </head>
+                <body>
+                    <div style="text-align: center; width: 100%; border-bottom: 2px solid #000000; padding-bottom: 10px; margin-bottom: 20px;">
+                        <p style="font-size: 22px; font-weight: bold; margin: 0;">LYM ELETRONICOS</p>
+                        <p style="font-size: 12px; margin: 4px 0 0 0;">RUA ARAREUA, 89 - JARDIM DAS CAMELIAS, SAO PAULO - S.P.</p>
+                        <p style="font-size: 12px; margin: 2px 0 0 0;">CNPJ: 44.313.525/0001-52</p>
+                        <p style="font-size: 12px; margin: 2px 0 0 0;">Telefone: (11) 9 3366 6836</p>
+                        <p style="font-size: 18px; font-weight: bold; margin: 12px 0 2px 0;">Orçamento Nº: ${dadosOrcamento.numero}</p>
+                        <p style="font-size: 12px; margin: 0;">Data: ${dadosOrcamento.dataHora}</p>
+                    </div>
+                    <div style="border: 1px solid #CCCCCC; padding: 10px; margin-bottom: 20px;">
+                        <p style="font-size: 12px; margin: 0 0 4px 0;"><strong>Cliente:</strong> ${dadosOrcamento.cliente.nome} &nbsp;|&nbsp; <strong>Fone:</strong> ${dadosOrcamento.cliente.fone}</p>
+                        <p style="font-size: 12px; margin: 0 0 4px 0;"><strong>Contato:</strong> ${dadosOrcamento.cliente.contato}</p>
+                        <p style="font-size: 12px; margin: 0 0 4px 0;"><strong>CNPJ/CPF:</strong> ${dadosOrcamento.cliente.cnpj}</p>
+                        <p style="font-size: 12px; margin: 0;"><strong>Endereço:</strong> ${dadosOrcamento.cliente.endereco}</p>
+                    </div>
+                    <table style="width: 100%;">
+                        <thead>
+                            <tr>
+                                <th style="width: 8%;">Código</th>
+                                <th style="width: 55%;">Descrição</th>
+                                <th style="width: 15%; text-align: right;">Preço Unit.</th>
+                                <th style="width: 10%; text-align: right;">Qtd</th>
+                                <th style="width: 12%; text-align: right;">Valor Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>${linhasLimpasHTML}</tbody>
+                    </table>
+                    <table style="width: 100%; margin-top: 10px;">
+                        <tr>
+                            <td style="border: none; width: 60%;"></td>
+                            <td style="border: 1px solid #000000; padding: 10px; font-size: 14px; font-weight: bold; text-align: right; width: 40%;">
+                                TOTAL A PAGAR: ${valorTotalGeral.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                            </td>
+                        </tr>
+                    </table>
+                    <div style="font-size: 11px; border: 1px dashed #666; padding: 10px; margin-top: 20px;">
+                        <strong>Observação:</strong><br/>
+                        ${dadosOrcamento.observacoes || '---'}
+                        <br><br>
+                        <p style="text-align: right; margin: 0;">Atenciosamente, <strong>PAULO MORINO</strong></p>
+                    </div>
+                </body>
+                </html>
+            `;
+
+            const blob = new Blob(['\ufeff' + dadosWord], { type: 'application/msword' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Orcamento_${dadosOrcamento.numero}_${nomeCliente.replace(/[^a-zA-Z0-9]/g, "_")}.doc`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            
+            salvarBancoFisicoNativo();
+        }
+
+        function listarOrcamentosNoModal() {
+            const lista = document.getElementById('lista-orcamentos-salvos');
+            lista.innerHTML = "";
+            if(orcamentosSalvos.length === 0) {
+                lista.innerHTML = "<li><span style='color: #64748b; font-size: 14px;'>Nenhum orçamento salvo ainda.</span></li>";
+                return;
+            }
+            orcamentosSalvos.forEach(orc => {
+                let li = document.createElement('li');
+                
+                let divInfo = document.createElement('div');
+                divInfo.className = "lista-info-clicavel";
+                divInfo.innerHTML = `<div><strong>Nº ${orc.numero}</strong> - ${orc.cliente.nome}</div> <div><strong>${orc.total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</strong></div>`;
+                divInfo.onclick = function() { carregarOrcamentoSalvo(orc.numero); };
+                
+                let btnExcluir = document.createElement('button');
+                btnExcluir.className = "btn btn-vermelho";
+                btnExcluir.style.padding = "6px 10px"; btnExcluir.style.fontSize = "12px"; btnExcluir.style.minWidth = "auto"; btnExcluir.style.flex = "none";
+                btnExcluir.innerText = "✖ Excluir";
+                btnExcluir.onclick = function(e) { e.stopPropagation(); excluirOrcamentoDoBanco(orc.numero); };
+                
+                li.appendChild(divInfo);
+                li.appendChild(btnExcluir);
+                lista.appendChild(li);
+            });
+        }
+
+        function carregarOrcamentoSalvo(num) {
+            const orc = orcamentosSalvos.find(o => o.numero === num);
+            if(orc) {
+                numeroOrcamentoAtual = parseInt(orc.numero);
+                document.getElementById('doc-numero').innerText = orc.numero;
+                dataAtualDoDocumento = orc.dataHora || "--/--/----";
+                document.getElementById('doc-data-hora').innerText = dataAtualDoDocumento;
+
+                document.getElementById('form-nome').value = orc.cliente.nome;
+                document.getElementById('form-fone').value = orc.cliente.fone;
+                document.getElementById('form-cnpj').value = orc.cliente.cnpj;
+                document.getElementById('form-endereco').value = orc.cliente.endereco;
+                document.getElementById('form-contato').value = orc.cliente.contato;
+                document.getElementById('form-observacoes').value = orc.observacoes || '';
+
+                document.getElementById('doc-cliente-nome').innerText = orc.cliente.nome;
+                document.getElementById('doc-cliente-fone').innerText = orc.cliente.fone;
+                document.getElementById('doc-cliente-cnpj').innerText = orc.cliente.cnpj;
+                document.getElementById('doc-cliente-end').innerText = orc.cliente.endereco;
+                document.getElementById('doc-cliente-contato').innerText = orc.cliente.contato;
+                document.getElementById('doc-assinatura-nome').innerText = orc.cliente.contato;
+                document.getElementById('doc-observacoes').innerText = orc.observacoes || '---';
+
+                itensDoOrcamentoAtual = orc.itens;
+                renderizarTabelaItens();
+                fecharModalPesquisa();
+            }
+        }
+    </script>
+</body>
+</html>
