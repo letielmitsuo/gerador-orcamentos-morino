@@ -4,82 +4,67 @@
 ![Badge Versão](https://img.shields.io/badge/Versão-1.0-blue)
 ![Badge OS](https://img.shields.io/badge/OS-Windows-lightgrey)
 
-O **Morino Orçamentos** (LYM Eletrônicos) é um sistema desktop leve, rápido e intuitivo desenvolvido para facilitar a criação, gerenciamento e impressão de orçamentos e ordens de serviço. Focado em agilidade, ele funciona 100% offline e salva seus dados de forma segura no próprio computador, garantindo total privacidade e rapidez no atendimento ao cliente.
+O **Morino Orçamentos** é um sistema desktop moderno e minimalista, desenvolvido para facilitar a gestão comercial, emissão de orçamentos e organização de clientes. Projetado para ser rápido e eficiente, o software permite que você trabalhe de forma totalmente offline, com seus dados salvos localmente e com total autonomia para gerenciar múltiplos emissores (filiais/empresas).
 
 ---
 
 ## ✨ Principais Recursos
 
-- **Gestão de Clientes:** Cadastro, edição e exclusão rápida de clientes (Nome, Telefone, CNPJ/CPF, Endereço e Contato).
-- **Criação Ágil de Orçamentos:** Inserção de itens com cálculo automático de valores totais.
-- **Exportação Profissional:** Geração automática de documentos no formato **Word (.doc)** prontos para envio.
-- **Impressão Direta:** Geração de espelho para impressão rápida em formato A4.
-- **Controle Numérico Inteligente:** Numeração automática de orçamentos com trava de segurança para evitar sobrescrita acidental.
-- **Interface Moderna:** Design minimalista, responsivo e focado na experiência do usuário (UX).
-- **Banco de Dados Local:** Dados salvos em arquivo `.json` leve e de fácil backup/sincronização.
+- **Gestão de Empresas (Emissores):** Cadastre, edite ou exclua múltiplas filiais ou empresas próprias. O sistema adapta automaticamente o cabeçalho, os dados de contato e a assinatura dos documentos conforme a empresa selecionada.
+- **Gestão de Clientes:** Cadastro, edição e exclusão de clientes com busca inteligente.
+- **Criação de Orçamentos:** Interface dinâmica para inserção de itens com cálculo automático de valores totais.
+- **Exportação Profissional:** Geração automática de documentos no formato **Word (.doc)**, com layout formatado e pronto para envio.
+- **Impressão Direta:** Geração de documento otimizado para impressão rápida em formato A4.
+- **Controle de Numeração:** Gestão de numeração sequencial de orçamentos com trava de segurança para evitar duplicidades.
+- **Interface Moderna:** Design minimalista, focado em usabilidade e com alta legibilidade.
+- **Sincronização Segura:** Permite backup e carregamento de arquivos de dados (`.json`), ideal para quem utiliza ferramentas de sincronização como o **Syncthing**.
 
 ---
 
 ## 💻 Tecnologias Utilizadas
 
-O sistema foi construído com tecnologias web padronizadas e empacotado para Desktop:
-
-- **HTML5, CSS3 e JavaScript (Vanilla)**: Estrutura, design e inteligência da aplicação.
-- **NW.js (Node-WebKit)**: Motor responsável por transformar o código web em um programa Desktop executável para Windows.
-- **Inno Setup**: Ferramenta utilizada para criar o instalador profissional (`.exe`).
+- **Frontend:** HTML5, CSS3 (Inter Font, Flexbox) e JavaScript.
+- **Desktop Runtime:** NW.js (Node-WebKit) para execução nativa no Windows.
+- **Instalador:** Inno Setup para criação de instalador profissional (.exe).
 
 ---
 
 ## 🚀 Como Instalar
 
-Para usar o programa, você não precisa entender de código. Basta baixar o instalador finalizado:
-
-1. Acesse a aba **[Releases](../../releases)** aqui no lado direito do repositório.
-2. Baixe o arquivo `Setup_Morino_Orcamentos.exe`.
-3. Dê um duplo clique no arquivo baixado e siga o passo a passo da instalação (Avançar > Concluir).
-4. O atalho com o logotipo será criado automaticamente na sua Área de Trabalho!
+1. Acesse a aba **[Releases](../../releases)** aqui no repositório.
+2. Baixe o instalador mais recente: `Setup_Morino_Orcamentos.exe`.
+3. Execute o instalador e siga o passo a passo.
+4. O sistema criará um atalho automático na sua área de trabalho.
 
 ---
 
-## 📖 Tutorial: Como usar a ferramenta
+## 📖 Tutorial: Como usar o sistema
 
-### 1. Configurações Iniciais
-Ao abrir o programa, na parte superior, você pode:
-* Selecionar o **Operador** (Usuário 1 ou Usuário 2).
-* Verificar se o **Banco de Dados** está conectado (Indicador verde).
-* Caso queira pular para um número de orçamento específico, digite o número na caixa **"Alterar Número do Orçamento Atual"** e clique em Aplicar. *Nota: O sistema impedirá que você use um número que já pertence a outro cliente salvo.*
+### 1. Configuração Inicial
+* **Cadastro de Empresa:** Antes de tudo, no módulo "Minha Empresa", clique em **"➕ Nova Filial/Empresa"** para registrar seus dados (Nome, CNPJ, Endereço, etc.). Esses dados aparecerão no topo e na assinatura de todos os orçamentos.
+* **Configuração de Número:** Na caixa "Configurar Próximo Número", defina o número inicial (ex: `1`) e clique em **"Aplicar"**.
 
-### 2. Cadastrando um Cliente
-1. Clique no botão laranja **"➕ Cadastrar Novo"**.
-2. Preencha os dados do cliente (Razão Social, Telefone, CNPJ, etc.).
-3. Clique em **"✔ Salvar Cliente"**. O cliente já ficará selecionado para o orçamento atual.
-*Dica: Para alterar ou apagar um cliente no futuro, selecione-o na lista e clique em **"✏️ Editar/Excluir"**.*
+### 2. Gerenciando Clientes
+* Cadastre seus clientes no botão **"➕ Cadastrar Novo"**.
+* Use o menu de seleção para carregar os dados de um cliente já existente e editar ou excluir via botão **"✏️ Editar/Excluir"**.
 
 ### 3. Montando o Orçamento
-1. Selecione o cliente desejado na lista suspensa.
-2. Na seção **"Adicionar Item ao Orçamento"** (na parte inferior), preencha o *Código, Descrição, Preço Unitário* e *Quantidade*.
-3. Clique em **"+ Inserir"**. O item vai para a tabela e o valor total é calculado automaticamente.
-4. Adicione as observações ou condições de pagamento na caixa **"Observação"**.
+1. Selecione a **Empresa Emissora** no topo e o **Cliente** na sequência.
+2. Na área **"Adicionar Item"**, preencha os campos e clique em **"+ Inserir"**.
+3. Adicione observações importantes na caixa **"Observação"**.
 
 ### 4. Salvando e Exportando
-Quando o orçamento estiver pronto, você tem duas opções principais:
-* **💾 Salvar e Gerar Word (.doc):** O sistema salva o orçamento no banco de dados, gera um arquivo Word preenchido e faz o download automático para o seu computador.
-* **🖨️ Imprimir Direto:** Abre a tela de impressão do Windows com um layout limpo, otimizado para folha A4 e economia de tinta.
+* **💾 Salvar e Gerar Word:** O sistema salva o orçamento no histórico e baixa automaticamente um arquivo `.doc` pronto para edição ou envio.
+* **🖨️ Imprimir Direto:** Abre a tela de impressão do seu navegador com o orçamento formatado.
 
-### 5. Pesquisando Orçamentos Antigos
-1. Clique no botão escuro **"🔍 Pesquisar/Editar Salvos"**.
-2. Uma janela mostrará todo o seu histórico de orçamentos.
-3. Clique sobre um orçamento para carregá-lo novamente na tela (para reimprimir ou gerar um novo Word) ou clique no botão vermelho para apagá-lo definitivamente.
+### 5. Histórico e Backup
+* Utilize o botão **"🔍 Pesquisar/Editar Salvos"** para listar orçamentos antigos. Você pode carregá-los novamente para reenviar ou excluí-los caso necessário.
+* Para realizar backups, utilize o botão **"🔌 Carregar Backup"** para importar seu ficheiro `banco_dados_principal.json`.
 
 ---
 
-## 🔄 Banco de Dados e Backup (Avançado)
-
-O sistema opera salvando os dados em um arquivo chamado `banco_dados_principal.json`. Para garantir que o Windows não bloqueie a gravação, este arquivo fica oculto na pasta de dados do aplicativo do usuário.
-
-**Para fazer backup ou sincronizar com o Syncthing:**
-1. Os seus dados ficam salvos em: `C:\Users\SEU_USUARIO\AppData\Local\Morino_Orcamentos\User Data\`
-2. Caso você tenha um backup antigo ou queira unificar dados de outro computador, use o botão **"🔌 Carregar Backup"** no painel superior e selecione o seu arquivo `.json`. O sistema unirá os clientes e orçamentos automaticamente!
+## 🔄 Armazenamento de Dados
+O sistema armazena suas informações em `C:\Users\SEU_USUARIO\AppData\Local\Morino_Orcamentos\User Data\banco_dados_principal.json`. Este arquivo é a alma do seu negócio; mantenha-o sempre em backup ou sincronizado em nuvem.
 
 ---
-*Desenvolvido para uso interno da LYM Eletrônicos.*
+*Desenvolvido para a LYM Eletrônicos.*
