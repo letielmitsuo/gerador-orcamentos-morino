@@ -67,4 +67,4 @@ O **Morino Orçamentos** é um sistema desktop moderno e minimalista, desenvolvi
 O sistema armazena suas informações em `C:\Users\SEU_USUARIO\AppData\Local\Morino_Orcamentos\User Data\banco_dados_principal.json`. Este arquivo é a alma do seu negócio; mantenha-o sempre em backup ou sincronizado em nuvem.
 
 ---
-*Desenvolvido para a LYM Eletrônicos.*
+*Desenvolvido por Letiel Mitsuo.*
